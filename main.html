@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>우당탕탕 집들이 🏠</title>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;700;900&family=Bebas+Neue&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f0e0c;
+      --card: #1a1814;
+      --accent: #f4c94e;
+      --accent2: #e87c3e;
+      --text: #f5f0e8;
+      --muted: #8a8070;
+      --border: #2e2a22;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Sans KR', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* 배경 노이즈 텍스처 */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    .container {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* 헤더 */
+    .header {
+      text-align: center;
+      padding: 60px 0 40px;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .stamp {
+      display: inline-block;
+      border: 3px solid var(--accent);
+      border-radius: 4px;
+      padding: 4px 14px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 13px;
+      letter-spacing: 4px;
+      color: var(--accent);
+      margin-bottom: 24px;
+      position: relative;
+    }
+    .stamp::before, .stamp::after {
+      content: '✦';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 8px;
+      opacity: 0.6;
+    }
+    .stamp::before { left: -18px; }
+    .stamp::after { right: -18px; }
+
+    .title-big {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(52px, 14vw, 80px);
+      line-height: 0.9;
+      letter-spacing: 2px;
+      color: var(--text);
+      display: block;
+    }
+    .title-ko {
+      font-size: clamp(18px, 5vw, 26px);
+      font-weight: 900;
+      color: var(--accent);
+      margin-top: 10px;
+      display: block;
+      letter-spacing: -0.5px;
+    }
+
+    .emoji-row {
+      font-size: 28px;
+      margin-top: 20px;
+      letter-spacing: 4px;
+      animation: bounce 2s infinite;
+    }
+
+    /* 초대 멘트 카드 */
+    .invite-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 28px;
+      margin: 32px 0;
+      position: relative;
+      overflow: hidden;
+      animation: fadeUp 0.8s 0.15s ease both;
+    }
+    .invite-card::before {
+      content: '"';
+      position: absolute;
+      top: -10px;
+      left: 16px;
+      font-size: 100px;
+      color: var(--accent);
+      opacity: 0.07;
+      font-family: Georgia, serif;
+      line-height: 1;
+    }
+    .invite-text {
+      font-family: 'Gowun Dodum', sans-serif;
+      font-size: 15.5px;
+      line-height: 1.85;
+      color: #d4ccbc;
+    }
+    .invite-text strong {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* 정보 섹션 */
+    .info-grid {
+      display: grid;
+      gap: 12px;
+      margin: 24px 0;
+      animation: fadeUp 0.8s 0.3s ease both;
+    }
+
+    .info-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 22px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      transition: border-color 0.2s;
+    }
+    .info-item:hover { border-color: var(--accent); }
+
+    .info-icon {
+      font-size: 26px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .info-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .info-value {
+      font-size: 15px;
+      color: var(--text);
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .info-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+      font-family: 'Gowun Dodum', sans-serif;
+    }
+
+    /* 카운트다운 */
+    .countdown-section {
+      animation: fadeUp 0.8s 0.45s ease both;
+    }
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: var(--muted);
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .countdown-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .cd-block {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 8px 14px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cd-block::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent2), var(--accent));
+      transform: scaleX(0);
+      transition: transform 0.5s ease;
+    }
+    .cd-block.active::after { transform: scaleX(1); }
+    .cd-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 42px;
+      line-height: 1;
+      color: var(--accent);
+      display: block;
+    }
+    .cd-label {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    /* D-day 뱃지 */
+    .dday-badge {
+      text-align: center;
+      margin-top: 14px;
+    }
+    .dday-text {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      color: #000;
+      font-weight: 900;
+      font-size: 14px;
+      letter-spacing: 1px;
+      padding: 6px 20px;
+      border-radius: 100px;
+    }
+
+    /* 지도 */
+    .map-section {
+      margin: 24px 0;
+      animation: fadeUp 0.8s 0.6s ease both;
+    }
+    .map-frame {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      height: 220px;
+    }
+    .map-frame iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      filter: invert(0.85) hue-rotate(180deg) saturate(0.7);
+    }
+    .map-link {
+      display: block;
+      text-align: center;
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: 0.5px;
+    }
+    .map-link:hover { text-decoration: underline; }
+
+    /* 참석 버튼 */
+    .rsvp-section {
+      margin-top: 32px;
+      animation: fadeUp 0.8s 0.75s ease both;
+    }
+    .rsvp-title {
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+    .rsvp-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .btn {
+      padding: 16px;
+      border-radius: 12px;
+      border: none;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: 'Noto Sans KR', sans-serif;
+      cursor: pointer;
+      transition: transform 0.15s, opacity 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-yes {
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      color: #000;
+    }
+    .btn-no {
+      background: var(--card);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .btn-no:hover { border-color: var(--muted); }
+
+    /* 응답 모달 */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      padding: 20px;
+    }
+    .modal-overlay.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .modal {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px 28px;
+      max-width: 340px;
+      width: 100%;
+      text-align: center;
+      transform: translateY(20px);
+      transition: transform 0.3s;
+    }
+    .modal-overlay.show .modal { transform: translateY(0); }
+    .modal-emoji { font-size: 48px; margin-bottom: 16px; }
+    .modal-title { font-size: 20px; font-weight: 900; margin-bottom: 10px; }
+    .modal-desc { font-size: 14px; color: var(--muted); line-height: 1.6; font-family: 'Gowun Dodum', sans-serif; }
+    .modal-close {
+      margin-top: 24px;
+      padding: 12px 32px;
+      background: var(--border);
+      border: none;
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 14px;
+      cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    /* 푸터 */
+    .footer {
+      text-align: center;
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 1px;
+      animation: fadeUp 0.8s 0.9s ease both;
+    }
+
+    /* 변동 안내 뱃지 */
+    .notice-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(244, 201, 78, 0.08);
+      border: 1px solid rgba(244, 201, 78, 0.25);
+      border-radius: 100px;
+      padding: 5px 14px;
+      font-size: 11.5px;
+      color: var(--accent);
+      margin-top: 10px;
+    }
+
+    /* 음식 댓글 섹션 */
+    .food-section {
+      margin-top: 32px;
+      animation: fadeUp 0.8s 0.85s ease both;
+    }
+    .food-input-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .food-name-input {
+      width: 90px;
+      flex-shrink: 0;
+      padding: 12px 14px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: 'Noto Sans KR', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .food-name-input:focus { border-color: var(--accent); }
+    .food-text-input {
+      flex: 1;
+      padding: 12px 14px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: 'Noto Sans KR', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .food-text-input:focus { border-color: var(--accent); }
+    .food-submit-btn {
+      padding: 12px 16px;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      border: none;
+      border-radius: 10px;
+      color: #000;
+      font-size: 18px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+    .food-submit-btn:active { transform: scale(0.95); }
+    .food-list {
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .food-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: fadeUp 0.3s ease both;
+    }
+    .food-item-emoji { font-size: 20px; flex-shrink: 0; }
+    .food-item-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+    .food-item-text {
+      font-size: 14px;
+      color: var(--text);
+      font-family: 'Gowun Dodum', sans-serif;
+      flex: 1;
+    }
+    .food-item-delete {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 16px;
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      transition: color 0.15s;
+    }
+    .food-item-delete:hover { color: #e87c3e; }
+    .food-empty {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 20px;
+      font-family: 'Gowun Dodum', sans-serif;
+    }
+    .food-count-badge {
+      display: inline-block;
+      background: rgba(244,201,78,0.12);
+      border: 1px solid rgba(244,201,78,0.3);
+      border-radius: 100px;
+      padding: 2px 10px;
+      font-size: 11px;
+      color: var(--accent);
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-6px); }
+    }
+
+    /* 구분선 */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 28px 0;
+      opacity: 0.3;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--muted);
+    }
+    .divider span { font-size: 12px; color: var(--muted); }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- 헤더 -->
+  <div class="header">
+    <div class="stamp">YOU'RE INVITED</div>
+    <span class="title-big">HOUSE<br>WARMING</span>
+    <span class="title-ko">우당탕탕 집들이 🏠</span>
+    <div style="font-size:13px; color:var(--muted); margin-top:6px; font-family:'Gowun Dodum',sans-serif;">재혁 · 은정 부부가 초대합니다</div>
+    <div class="emoji-row">🥂 🍖 💥 🎊 🍕</div>
+  </div>
+
+  <!-- 초대 멘트 -->
+  <div class="invite-card">
+    <p class="invite-text">
+      <strong>재혁, 은정 부부 집에 초대합니다 ㅋㅋㅋㅋ</strong> 🎉<br><br>
+      그러케 한다한다 했는데... 미루고 밀리고 또 미뤄지다가<br>
+      드디어 초대합니다!! 👏👏👏<br><br>
+      사람 사는 집이 다 똑같지만<br>
+      와서 재밌게 이야기하고 <strong>같이 놀자!</strong> 🙌<br><br>
+      맛있는 밥도 있지만 🍚<br>
+      먹고싶은 음식 메뉴가 있으면 <strong>아래에 적어줘!</strong> 👇<br><br>
+      손놈들 올 때 각자 먹을 <strong>과자 하나씩</strong> 낭낭하게 챙겨왕~ 🍿😂
+    </p>
+  </div>
+
+  <!-- 날짜 / 장소 정보 -->
+  <div class="info-grid">
+    <div class="info-item">
+      <div class="info-icon">📅</div>
+      <div>
+        <div class="info-label">Date</div>
+        <div class="info-value" id="date-display">--</div>
+        <div class="info-sub" id="date-sub">--</div>
+        <div class="notice-badge">⚡ 날짜 변동 가능성 있음</div>
+      </div>
+    </div>
+    <div class="info-item">
+      <div class="info-icon">📍</div>
+      <div>
+        <div class="info-label">Location</div>
+        <div class="info-value">신사동 140-1 3동 509호</div>
+        <div class="info-sub">서울시 은평구 신사동 140-1</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 카운트다운 -->
+  <div class="countdown-section">
+    <div class="section-label">🕐 집들이까지 남은 시간</div>
+    <div class="countdown-grid">
+      <div class="cd-block" id="cd-days">
+        <span class="cd-num" id="days">--</span>
+        <div class="cd-label">Days</div>
+      </div>
+      <div class="cd-block" id="cd-hours">
+        <span class="cd-num" id="hours">--</span>
+        <div class="cd-label">Hours</div>
+      </div>
+      <div class="cd-block" id="cd-mins">
+        <span class="cd-num" id="mins">--</span>
+        <div class="cd-label">Mins</div>
+      </div>
+      <div class="cd-block" id="cd-secs">
+        <span class="cd-num" id="secs">--</span>
+        <div class="cd-label">Secs</div>
+      </div>
+    </div>
+    <div class="dday-badge">
+      <span class="dday-text" id="dday-text">계산 중...</span>
+    </div>
+  </div>
+
+  <div class="divider"><span>✦</span></div>
+
+  <!-- 지도 -->
+  <div class="map-section">
+    <div class="section-label">🗺️ 오시는 길</div>
+    <div class="map-frame">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d500!2d126.9077785!3d37.5894978!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357f97c84de1a70b%3AChIJt6JjTqyZfDUR2tPYsXWc3ZU!2z7Iuk7IucZG9uZyAxNDAtMQ!5e0!3m2!1sko!2skr!4v1700000000000!5m2!1sko!2skr"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+    <a class="map-link" href="https://maps.google.com/?q=서울시+은평구+신사동+140-1" target="_blank">
+      📱 구글 지도에서 열기 →
+    </a>
+    <div style="margin-top:14px; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px 18px;">
+      <div style="font-size:11px; font-weight:700; letter-spacing:2px; color:var(--accent); margin-bottom:10px;">TRANSPORT</div>
+      <div style="font-size:13.5px; color:#c8c0b0; line-height:1.9; font-family:'Gowun Dodum',sans-serif;">
+        🚇 지하철 6호선 <strong style="color:var(--text)">새절역</strong> 3번 출구 → 도보 약 10분<br>
+        🚌 버스 <strong style="color:var(--text)">미성아파트 앞 정류장</strong> 하차<br>
+        🚗 주차 가능
+      </div>
+    </div>
+  </div>
+
+  <!-- 참석 여부 -->
+  <div class="rsvp-section">
+    <div class="rsvp-title">참석 가능해? 🙋</div>
+    <div class="rsvp-buttons">
+      <button class="btn btn-yes" onclick="openModal('yes')">🙋 당연히 갈게!</button>
+      <button class="btn btn-no" onclick="openModal('no')">😢 나 못 가...</button>
+    </div>
+  </div>
+
+  <!-- 먹고 싶은 음식 댓글 -->
+  <div class="food-section">
+    <div class="section-label">🍽️ 먹고 싶은 음식 <span class="food-count-badge" id="food-count">0</span></div>
+    <div style="font-size:12px; color:var(--muted); text-align:center; margin-bottom:2px; font-family:'Gowun Dodum',sans-serif;">
+      먹고 싶은 거 적어줘! 최대한 반영해볼게 😋
+    </div>
+    <div class="food-input-row">
+      <input class="food-name-input" id="food-name" type="text" placeholder="이름" maxlength="6" />
+      <input class="food-text-input" id="food-text" type="text" placeholder="🍣 초밥이 먹고싶어요!" maxlength="30" />
+      <button class="food-submit-btn" onclick="addFood()">➕</button>
+    </div>
+    <div class="food-list" id="food-list">
+      <div class="food-empty" id="food-empty">아직 아무도 안 적었어... 첫 번째가 돼봐! 🙋</div>
+    </div>
+  </div>
+
+  <!-- 푸터 -->
+  <div class="footer">
+    <div>재혁 &amp; 은정 집들이 · 2026</div>
+    <div style="margin-top:6px; font-size:11px; opacity:0.5">날짜 변경 시 다시 연락 줄게 🙏</div>
+  </div>
+
+</div>
+
+<!-- 모달 -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-emoji" id="modal-emoji">🎉</div>
+    <div class="modal-title" id="modal-title">완전 ㄱ!</div>
+    <div class="modal-desc" id="modal-desc">기다리고 있을게 ㅋㅋ 늦지 마!</div>
+    <button class="modal-close" onclick="document.getElementById('modal').classList.remove('show')">닫기</button>
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, push, remove, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  // Firebase 설정
+  const firebaseConfig = {
+    apiKey: "AIzaSyAZvWhn0J6cpNUYqX7dNlIv5eQFhcqRZ9A",
+    authDomain: "jaydenhome-51f9c.firebaseapp.com",
+    databaseURL: "https://jaydenhome-51f9c-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "jaydenhome-51f9c",
+    storageBucket: "jaydenhome-51f9c.firebasestorage.app",
+    messagingSenderId: "2263434772",
+    appId: "1:2263434772:web:65b1b2cfd329639fa4c901"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db  = getDatabase(app);
+  const foodsRef = ref(db, 'housewarming/foods');
+
+  const foodEmojis = ['🍣','🍕','🍖','🍜','🌮','🍱','🥩','🍔','🍝','🥘','🍛','🦞','🥗','🍗','🧆','🍤','🥟','🫕'];
+
+  function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // 실시간 리스너 — DB 바뀌면 즉시 전체 갱신
+  onValue(foodsRef, (snapshot) => {
+    const list  = document.getElementById('food-list');
+    const empty = document.getElementById('food-empty');
+    const count = document.getElementById('food-count');
+
+    Array.from(list.querySelectorAll('.food-item')).forEach(el => el.remove());
+
+    const data = snapshot.val();
+    if (!data) {
+      count.textContent = '0';
+      empty.style.display = 'block';
+      return;
+    }
+
+    const entries = Object.entries(data).reverse(); // 최신순
+    count.textContent = entries.length;
+    empty.style.display = 'none';
+
+    entries.forEach(([key, f]) => {
+      const div = document.createElement('div');
+      div.className = 'food-item';
+      div.innerHTML = `
+        <span class="food-item-emoji">${f.emoji}</span>
+        <span class="food-item-name">${escHtml(f.name)}</span>
+        <span class="food-item-text">${escHtml(f.text)}</span>
+        <button class="food-item-delete" onclick="deleteFood('${key}')" title="삭제">✕</button>
+      `;
+      list.appendChild(div);
+    });
+  });
+
+  // 추가
+  window.addFood = function() {
+    const nameEl = document.getElementById('food-name');
+    const textEl = document.getElementById('food-text');
+    const name = nameEl.value.trim();
+    const text = textEl.value.trim();
+
+    if (!name) { nameEl.focus(); nameEl.style.borderColor='var(--accent2)'; setTimeout(()=>nameEl.style.borderColor='',800); return; }
+    if (!text) { textEl.focus(); textEl.style.borderColor='var(--accent2)'; setTimeout(()=>textEl.style.borderColor='',800); return; }
+
+    const emoji = foodEmojis[Math.floor(Math.random() * foodEmojis.length)];
+    push(foodsRef, { name, text, emoji, createdAt: Date.now() });
+
+    nameEl.value = '';
+    textEl.value = '';
+    textEl.focus();
+  };
+
+  // 삭제
+  window.deleteFood = function(key) {
+    remove(ref(db, `housewarming/foods/${key}`));
+  };
+
+  // 엔터키
+  document.getElementById('food-text').addEventListener('keydown', e => { if (e.key === 'Enter') window.addFood(); });
+  document.getElementById('food-name').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('food-text').focus(); });
+
+  // ================================================
+  // ✏️  날짜/시간 여기서만 바꾸면 전부 자동 반영!
+  // ================================================
+  const EVENT_DATE   = '2026-12-31'; // YYYY-MM-DD
+  const EVENT_TIME   = '15:00';      // HH:MM (24시간)
+  const EVENT_HOUR   = 15;           // 시작 시각 (시)
+  const EVENT_MINUTE = 0;            // 시작 시각 (분)
+  // ================================================
+
+  // 날짜 관련 자동 계산
+  const [eYear, eMonth, eDay] = EVENT_DATE.split('-').map(Number);
+  const target = new Date(`${EVENT_DATE}T${EVENT_TIME}:00+09:00`);
+
+  const WEEKDAYS = ['일','월','화','수','목','금','토'];
+  const HOLIDAYS = {
+    '01-01': '신정 🎆',
+    '03-01': '삼일절 🇰🇷',
+    '05-05': '어린이날 🎈',
+    '06-06': '현충일 🎖️',
+    '08-15': '광복절 🇰🇷',
+    '10-03': '개천절 🇰🇷',
+    '10-09': '한글날 📜',
+    '12-25': '크리스마스 🎄',
+  };
+
+  function renderDateCard() {
+    const dow     = WEEKDAYS[target.getDay()];
+    const mmdd    = `${String(eMonth).padStart(2,'0')}-${String(eDay).padStart(2,'0')}`;
+    const holiday = HOLIDAYS[mmdd] || null;
+    const ampm    = EVENT_HOUR < 12 ? '오전' : '오후';
+    const hour12  = EVENT_HOUR % 12 === 0 ? 12 : EVENT_HOUR % 12;
+    const minStr  = String(EVENT_MINUTE).padStart(2,'0');
+
+    document.getElementById('date-display').textContent =
+      `${eYear}년 ${eMonth}월 ${eDay}일 (${dow})`;
+    document.getElementById('date-sub').textContent =
+      `${ampm} ${hour12}:${minStr}${holiday ? ' · ' + holiday : ''}`;
+  }
+
+  renderDateCard();
+
+  function updateCountdown() {
+    const now  = new Date();
+    const diff = target - now;
+
+    if (diff <= 0) {
+      document.getElementById('days').textContent  = '0';
+      document.getElementById('hours').textContent = '0';
+      document.getElementById('mins').textContent  = '0';
+      document.getElementById('secs').textContent  = '0';
+      document.getElementById('dday-text').textContent = '🎉 오늘이야! 얼른 와!';
+      return;
+    }
+
+    const days  = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const mins  = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const secs  = Math.floor((diff % (1000 * 60)) / 1000);
+
+    document.getElementById('days').textContent  = String(days).padStart(2,'0');
+    document.getElementById('hours').textContent = String(hours).padStart(2,'0');
+    document.getElementById('mins').textContent  = String(mins).padStart(2,'0');
+    document.getElementById('secs').textContent  = String(secs).padStart(2,'0');
+    document.getElementById('dday-text').textContent = `D - ${days}`;
+    document.getElementById('cd-secs').classList.toggle('active', secs % 2 === 0);
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // 모달
+  const responses = {
+    yes: { emoji: '🥳', title: '오 ㄹㅇ?! 완전 ㄱ!!', desc: '기다리고 있을게 ㅋㅋㅋ\n늦지 말고 와, 밥 차려놓을게 🍚' },
+    no:  { emoji: '😭', title: '야 왜... 진짜야...?',  desc: '알겠어 어쩔 수 없지 뭐...\n다음에 꼭 보자 진짜로 😤' }
+  };
+
+  window.openModal = function(type) {
+    const r = responses[type];
+    document.getElementById('modal-emoji').textContent = r.emoji;
+    document.getElementById('modal-title').textContent = r.title;
+    document.getElementById('modal-desc').textContent  = r.desc;
+    document.getElementById('modal').classList.add('show');
+  };
+
+  window.closeModal = function(e) {
+    if (e.target === document.getElementById('modal')) {
+      document.getElementById('modal').classList.remove('show');
+    }
+  };
+</script>
+</body>
+</html>
